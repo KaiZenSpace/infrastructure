@@ -1,0 +1,55 @@
+root@34c997390c6d:/ClientManager# ./wg-manager.sh help
+WireGuard Manager - Verwaltungstool für WireGuard
+
+Verwendung:
+  wg-manager list-peers         - Alle Peers auflisten
+  wg-manager add-peer <name>    - Neuen Peer hinzufügen
+  wg-manager remove-peer <name> - Peer entfernen
+  wg-manager set-max-clients <n> - Maximale Anzahl von Clients setzen (-1 für unbegrenzt)
+  wg-manager help               - Diese Hilfe anzeigen
+
+Konfiguration:
+  Die Konfigurationsdatei befindet sich unter: /ClientManager/config.sh
+root@34c997390c6d:/ClientManager# nano /ClientManager/config.sh 
+root@34c997390c6d:/ClientManager# ./wg-manager.sh list-peers
+=== WireGuard Peers ===
+NAME                PUBLIC KEY                                      IP-ADRESSE      VERBUNDEN      ZULETZT GESEHEN
+-------------------------------------------------------------------------------------------------------
+peer1                xyEZ+BL/+p3YyT0adzT5E6hWKwGeH8bZ3nreVJEE7n4=       10.13.13.2      Nein           2025-03-25 16:33:28 
+
+Anzahl der Clients: 1
+Maximale Anzahl erlaubter Clients: 5
+root@34c997390c6d:/ClientManager# ./wg-manager.sh add-peer peer2
+Peer 'peer2' wurde erfolgreich mit der IP 10.13.13.3 erstellt.
+Die Konfigurationsdatei befindet sich unter /root/../config/peer2/peer2.conf
+Ein QR-Code für mobile Geräte wurde unter /root/../config/peer2/peer2.png erstellt.
+root@34c997390c6d:/ClientManager# ./wg-manager.sh add-peer peer3
+Peer 'peer3' wurde erfolgreich mit der IP 10.13.13.4 erstellt.
+Die Konfigurationsdatei befindet sich unter /root/../config/peer3/peer3.conf
+Ein QR-Code für mobile Geräte wurde unter /root/../config/peer3/peer3.png erstellt.
+root@34c997390c6d:/ClientManager# ./wg-manager.sh add-peer peer4
+Peer 'peer4' wurde erfolgreich mit der IP 10.13.13.5 erstellt.
+Die Konfigurationsdatei befindet sich unter /root/../config/peer4/peer4.conf
+Ein QR-Code für mobile Geräte wurde unter /root/../config/peer4/peer4.png erstellt.
+root@34c997390c6d:/ClientManager# ./wg-manager.sh add-peer peer5
+Peer 'peer5' wurde erfolgreich mit der IP 10.13.13.6 erstellt.
+Die Konfigurationsdatei befindet sich unter /root/../config/peer5/peer5.conf
+Ein QR-Code für mobile Geräte wurde unter /root/../config/peer5/peer5.png erstellt.
+root@34c997390c6d:/ClientManager# ./wg-manager.sh add-peer peer6
+FEHLER: Konnte keinen inaktiven Peer zum Löschen finden. Limit kann nicht eingehalten werden.
+root@34c997390c6d:/ClientManager# ./wg-manager.sh remove-peer peer2
+Peer 'peer2' wurde erfolgreich entfernt.
+Sollen die Konfigurationsdateien für 'peer2' gelöscht werden? (j/N): j
+Konfigurationsdateien für 'peer2' wurden gelöscht.
+root@34c997390c6d:/ClientManager# ./wg-manager.sh remove-peer peer3
+Peer 'peer3' wurde erfolgreich entfernt.
+Sollen die Konfigurationsdateien für 'peer3' gelöscht werden? (j/N): j
+Konfigurationsdateien für 'peer3' wurden gelöscht.
+root@34c997390c6d:/ClientManager# ./wg-manager.sh remove-peer peer4
+Peer 'peer4' wurde erfolgreich entfernt.
+Sollen die Konfigurationsdateien für 'peer4' gelöscht werden? (j/N): j
+Konfigurationsdateien für 'peer4' wurden gelöscht.
+root@34c997390c6d:/ClientManager# ./wg-manager.sh remove-peer peer5
+Peer 'peer5' wurde erfolgreich entfernt.
+Sollen die Konfigurationsdateien für 'peer5' gelöscht werden? (j/N): j 
+Konfigurationsdateien für 'peer5' wurden gelöscht.

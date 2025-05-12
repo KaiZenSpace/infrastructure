@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    container_name: vpnmanager-api
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_USER=vpnmanager
+      - DB_PASSWORD=your_secure_password_here
+      - DB_HOST=postgres
+      - DB_NAME=vpnmanager_db
+      - DB_PORT=5432
+    networks:
+      - homeserver_network
+    volumes:
+      - ./src:/app/src
+      
+networks:
+  homeserver_network:
+    external: true

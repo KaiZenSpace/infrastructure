@@ -1,0 +1,107 @@
+# Home Server Architecture: Data Sync & Communication
+
+## Overview
+
+This document describes the architecture for secure communication between components on a home server and a central API service with database access.
+
+```
+HomeServer (WireGuard + CoreDNS) <---> API Service <---> Database
+```
+
+## Components
+
+1. **Home Server**
+   - **WireGuard ClientManager**: Manages VPN peers
+   - **CoreDNS ipblocker**: Filters DNS requests
+
+2. **API Service**
+   - Provides authenticated endpoints for data
+   - Sends webhook notifications for data changes
+   - Connects to PostgreSQL database
+
+3. **PostgreSQL Database**
+   - Stores users, clients, and blocklists
+   - Uses triggers to detect changes
+
+## Authentication & Security
+
+- Each user has an API key generated and stored in the database
+- The home server is configured with this API key for authentication
+- All API requests include this key in the Authorization header
+- Webhook requests are signed for verification
+- All communication occurs over HTTPS
+
+## Data Synchronization
+
+### Initial Sync
+
+Upon startup, components fetch their initial data:
+
+1. **WireGuard ClientManager**
+   ```
+   GET /api/sync/clients
+   Authorization: Bearer {API_KEY}
+   ```
+
+2. **CoreDNS ipblocker**
+   ```
+   GET /api/sync/lists
+   Authorization: Bearer {API_KEY}
+   ```
+
+### Real-time Updates
+
+When database changes occur, components are notified instantly:
+
+1. **Database Change Detection**
+   - PostgreSQL triggers fire on relevant table changes
+   - Trigger calls notification function
+
+2. **Webhook Notification**
+   - API service receives notification
+   - Determines affected component(s)
+   - Sends HTTP POST to registered webhook URL
+
+3. **Home Server Response**
+   - Webhook server receives notification
+   - Verifies webhook signature
+   - Calls appropriate sync function
+
+## Implementation
+
+### Home Server Webhook Endpoints
+
+```
+POST /webhook/wireguard
+  → Calls syncClients()
+  → Updates WireGuard configuration
+
+POST /webhook/ipblocker
+  → Calls syncLists()
+  → Updates DNS filtering rules
+```
+
+### Database Triggers
+
+```sql
+CREATE FUNCTION notify_changes() RETURNS TRIGGER AS $$
+BEGIN
+  PERFORM pg_notify('db_changes', TG_TABLE_NAME || ':' || TG_OP || ':' || NEW.id);
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER clients_trigger AFTER INSERT OR UPDATE OR DELETE ON clients
+  FOR EACH ROW EXECUTE FUNCTION notify_changes();
+```
+
+## Key Benefits
+
+- **Secure**: No direct database access from home server
+- **Real-time**: Immediate sync after database changes
+- **Efficient**: No polling, updates only when needed
+- **Simple**: Clear interfaces and responsibilities
+- **Controlled**: API validates all data
+- **Standard**: Uses industry-standard webhook pattern
+
+This architecture provides a straightforward, secure, and efficient way for home server components to stay synchronized with the central database without direct database access.

@@ -1,0 +1,14 @@
+Home Server
+* WireGuard (ClientManager)
+* CoreDNS (ipblocker)
+* MagicSocket (integrated with WireGuard)
+* Cloudflared connector
+* STUN client functionality (part of MagicSocket or broker agent)
+VPS (Broker Server)
+* PostgresDB
+* Broker API Service
+* Cloudflare Tunnel Management
+* STUN coordination logic (part of Broker API)
+External Services (Not self-hosted)
+* Public STUN servers (Google, etc.)
+* Cloudflare's network (for tunnels)
